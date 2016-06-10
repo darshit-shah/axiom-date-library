@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<title>Date Library</title>
+		<script src="../assertHelper.js"></script>
+		<script type="text/javascript" src="DateLibrary.js"></script>
+		<script	type="text/javascript" src="../../../DMaterial/assets/js/jquery.js"></script>
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				var iDate = new Date(2015, 5, 15, 14, 10, 39); // 15th June 2015
+				assert(DateLibrary.getDayOfWeek(iDate, {operationType: "day of week"}), "Monday");
+				assert(DateLibrary.getDayOfWeek(iDate, {operationType: "day number of week", startDayOfWeek:"Sunday"}), 1); //output will be between 0-6
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "absolute datetime", granularityType: "days", value: -13}), (new Date(2015, 5, 2, 14, 10, 39)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "absolute datetime", granularityType: "hours", value: -13}), (new Date(2015, 5, 15, 01, 10, 39)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "first date", granularityType: "quarters"}), (new Date(2015, 3, 01, 0, 0, 0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "last date", granularityType: "quarters"}), (new Date(2015, 5, 30, 23, 59, 59)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in week", startDayOfWeek:"Sunday", returnDayOfWeek:"Wednesday"}), (new Date(2015,05,17,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in week", startDayOfWeek:"Wednesday", returnDayNumberOfWeek:0}), (new Date(2015, 5, 10, 0, 0, 0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in month for given week", startDayOfWeek:"Monday", returnDayOfWeek:"Friday", WeekOfMonth:2}), (new Date(2015,5,12,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in month for given week", startDayOfWeek:"Sunday", returnDayNumberOfWeek:3, WeekOfMonth:3}), (new Date(2015,5,17,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in quarter for given month and week", startDayOfWeek:"Tuesday", returnDayOfWeek:"Friday", MonthOfQuarter:2, WeekOfMonth:3}), (new Date(2015,4,15,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in quarter for given month and week", startDayOfWeek:"Tuesday", returnDayOfWeek:"Friday", MonthOfQuarter:3, WeekOfMonth:3}), (new Date(2015,5,12,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given week", startDayOfWeek:"Tuesday", returnDayOfWeek:"Sunday", WeekOfYear:18}), (new Date(2015,04,03,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given week", startDayOfWeek:DateLibrary.DOW.Thursday, returnDayOfWeek:"Tuesday", WeekOfYear:7}), (new Date(2015,01,17,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given week", startDayOfWeek:DateLibrary.DOW.Thursday, returnDayOfWeek:"Tuesday", WeekOfYear:3}), (new Date(2015,00,13,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given week", startDayOfWeek:DateLibrary.DOW.Friday, returnDayOfWeek:DateLibrary.DOW.Friday, WeekOfYear:4}), (new Date(2015,00,16,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given month and week", startDayOfWeek:"Friday", returnDayOfWeek:"Tuesday", WeekOfMonth:3, MonthOfYear:8}), (new Date(2015,07,18,0,0,0)));
+				assert(DateLibrary.getRelativeDate(iDate, {operationType: "date of weekday in year for given quarter and month and week", startDayOfWeek:"Friday", returnDayOfWeek:"Tuesday", QuarterOfYear:3, MonthOfQuarter:2, WeekOfMonth:3}), (new Date(2015,07,18,0,0,0)));
+				assert(DateLibrary.getWeekNumber(iDate, {operationType: "week of year", startDayOfWeek:"Tuesday"}), 24);
+				assert(DateLibrary.getWeekNumber(new Date(2015,0,23), {operationType: "week of year", startDayOfWeek:"Tuesday"}), 4);
+				assert(DateLibrary.getWeekNumber(iDate, {operationType: "calendar week of month", startDayOfWeek:"Tuesday"}), 3); // output may come between 1-6
+				assert(DateLibrary.getWeekNumber(iDate, {operationType: "week of month by days distribution for as weeks", "28days":[7,7,7,7],"29days":[7,7,7,8],"30days":[7,8,7,8],"31days":[7,8,8,8]}), 2);
+				assert(DateLibrary.getWeekNumber(iDate, {operationType: "week of month by days distribution for as weeks", "28days":[5,6,5,6,6],"29days":[5,6,6,6,6],"30days":[6,6,6,6,6],"31days":[5,5,5,5,5,6]}), 3);
+
+				function assert(a, b){
+					if(Object.prototype.toString.call(a) === '[object Date]')
+						a = a.getTime();
+					if(Object.prototype.toString.call(b) === '[object Date]')
+						b = b.getTime();
+
+					if(a != b)
+						console.error(a, ' is not same as ', b)
+					else
+						console.log(a, ' is same as ', b)
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Date Library</h1>		
+	</body>
+</html>

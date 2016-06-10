@@ -1,0 +1,22 @@
+{
+  "name": "axiom-date-library",
+  "version": "1.0.0",
+  "description": "--- #### Author : Axiom ##### Created on : 9th Nov 2015 <!-- ##### Update Date : 10th Nov 2015 --> --- ## constant",
+  "main": "dateManagement.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darshit-shah/axiom-date-library.git"
+  },
+  "dependencies": {
+    "axiom-assert-helper": "*"
+  },
+  "author": "darshit@byteprophecy.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/darshit-shah/axiom-date-library/issues"
+  },
+  "homepage": "https://github.com/darshit-shah/axiom-date-library#readme"
+}
