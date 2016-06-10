@@ -12,7 +12,7 @@
 
 ! function() {
   if (typeof require === "function") {
-    assertHelper = require("assert-helper");
+    assertHelper = require("axiom-assert-helper");
   }
   "use strict";
   var DateLibrary = {
