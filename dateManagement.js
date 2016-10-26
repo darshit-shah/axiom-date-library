@@ -648,12 +648,12 @@
 
         // this case for months
       case DateLibrary.GranularityType.Months:
-        Date.setMonth(date.getMonth() + value);
+        date.setMonth(date.getMonth() + value);
         break;
 
         // this case for years
       case DateLibrary.GranularityType.Years:
-        Date.setFullYear(date.getFullYear() + value);
+        date.setFullYear(date.getFullYear() + value);
         break;
 
       default:
