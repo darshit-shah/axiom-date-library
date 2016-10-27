@@ -648,7 +648,7 @@
 
         // this case for months
       case DateLibrary.GranularityType.Months:
-        var currDate = date.getDate();
+        var currDate = new Date(date.getTime());
         currDate.setDate(currDate.getDate()+1);
         if (currDate.getDate() !== 1) {
           date.setMonth(date.getMonth() + value);
