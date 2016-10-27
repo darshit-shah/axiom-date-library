@@ -648,7 +648,14 @@
 
         // this case for months
       case DateLibrary.GranularityType.Months:
-        date.setMonth(date.getMonth() + value);
+        var currDate = date.getDate();
+        currDate.setDate(currDate.getDate()+1);
+        if (currDate.getDate() !== 1) {
+          date.setMonth(date.getMonth() + value);
+        } else {
+          date.setDate(1);
+          date.setDate(date.getDate() - 1);
+        }
         break;
 
         // this case for years
