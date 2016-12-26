@@ -654,7 +654,22 @@
           date.setMonth(date.getMonth() + value);
         } else {
           date.setDate(1);
-          date.setDate(date.getDate() - 1);
+          date.setMonth(date.getMonth() + value);
+          date.setMonth(date.getMonth() + 1);
+          date.setMonth(date.getDate() - 1);
+        }
+        break;
+
+      case DateLibrary.GranularityType.Quarters:
+        var currDate = new Date(date.getTime());
+        currDate.setDate(currDate.getDate()+1);
+        if (currDate.getDate() !== 1) {
+          date.setMonth(date.getMonth() + value*(3));
+        } else {
+          date.setDate(1);
+          date.setMonth(date.getMonth() + value*(3));
+          date.setMonth(date.getMonth() + 1);
+          date.setMonth(date.getDate() - 1);
         }
         break;
 
