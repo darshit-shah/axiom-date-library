@@ -656,7 +656,7 @@
           date.setDate(1);
           date.setMonth(date.getMonth() + value);
           date.setMonth(date.getMonth() + 1);
-          date.setMonth(date.getDate() - 1);
+          date.setDate(date.getDate() - 1);
         }
         break;
 
