@@ -669,7 +669,7 @@
           date.setDate(1);
           date.setMonth(date.getMonth() + value*(3));
           date.setMonth(date.getMonth() + 1);
-          date.setMonth(date.getDate() - 1);
+          date.setDate(date.getDate() - 1);
         }
         break;
 
