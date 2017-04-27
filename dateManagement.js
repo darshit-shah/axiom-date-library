@@ -650,13 +650,18 @@
       case DateLibrary.GranularityType.Months:
         var currDate = new Date(date.getTime());
         currDate.setDate(currDate.getDate()+1);
-        if (currDate.getDate() !== 1) {
+        var dayOfMonth = currDate.getDate();
+        //console.log('dayOfMonth=',dayOfMonth);
+        var currMonth = currDate.getMonth();
+        //console.log('currentMonth=',currMonth);
+                                        // condition for march and date 30th
+        if (currDate.getDate() !== 1 && (currMonth !== 2 && dayOfMonth !== 31)) {
           date.setMonth(date.getMonth() + value);
         } else {
           date.setDate(1);
           date.setMonth(date.getMonth() + value);
           date.setMonth(date.getMonth() + 1);
-          date.setMonth(date.getDate() - 1);
+          date.setDate(date.getDate() - 1);
         }
         break;
 
@@ -669,7 +674,7 @@
           date.setDate(1);
           date.setMonth(date.getMonth() + value*(3));
           date.setMonth(date.getMonth() + 1);
-          date.setMonth(date.getDate() - 1);
+          date.setDate(date.getDate() - 1);
         }
         break;
 
