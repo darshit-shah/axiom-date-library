@@ -651,7 +651,12 @@
         var currDate = new Date(date.getTime());
         currDate.setDate(currDate.getDate()+1);
         if (currDate.getDate() !== 1) {
+          var dayOfMonth = date.getDate();
           date.setMonth(date.getMonth() + value);
+          var newDayOfMonth = date.getDate();
+          if(dayOfMonth != newDayOfMonth){
+            date.setDate(0);
+          }
         } else {
           date.setDate(1);
           date.setMonth(date.getMonth() + value);
@@ -664,7 +669,12 @@
         var currDate = new Date(date.getTime());
         currDate.setDate(currDate.getDate()+1);
         if (currDate.getDate() !== 1) {
+          var dayOfMonth = date.getDate();
           date.setMonth(date.getMonth() + value*(3));
+          var newDayOfMonth = date.getDate();
+          if(dayOfMonth != newDayOfMonth){
+            date.setDate(0);
+          }
         } else {
           date.setDate(1);
           date.setMonth(date.getMonth() + value*(3));
