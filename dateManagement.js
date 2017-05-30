@@ -493,6 +493,22 @@
     return weekNumber;
   }
 
+  // set Time to at Start into given hour and return Date
+  function setHourOfTimeAtStart(date) {
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+  }
+
+  // set Time to at End into given hour and return Date
+  function setHourOfTimeAtEnd(date) {
+    date.setMinutes(59);
+    date.setSeconds(59);
+    date.setMilliseconds(999);
+    return date;
+  }
+
   // set Time to at Start into given Date and return Date
   function setDateOfTimeAtStart(date) {
     date.setHours(0);
@@ -649,12 +665,12 @@
         // this case for months
       case DateLibrary.GranularityType.Months:
         var currDate = new Date(date.getTime());
-        currDate.setDate(currDate.getDate()+1);
+        currDate.setDate(currDate.getDate() + 1);
         if (currDate.getDate() !== 1) {
           var dayOfMonth = date.getDate();
           date.setMonth(date.getMonth() + value);
           var newDayOfMonth = date.getDate();
-          if(dayOfMonth != newDayOfMonth){
+          if (dayOfMonth != newDayOfMonth) {
             date.setDate(0);
           }
         } else {
@@ -667,17 +683,17 @@
 
       case DateLibrary.GranularityType.Quarters:
         var currDate = new Date(date.getTime());
-        currDate.setDate(currDate.getDate()+1);
+        currDate.setDate(currDate.getDate() + 1);
         if (currDate.getDate() !== 1) {
           var dayOfMonth = date.getDate();
-          date.setMonth(date.getMonth() + value*(3));
+          date.setMonth(date.getMonth() + value * (3));
           var newDayOfMonth = date.getDate();
-          if(dayOfMonth != newDayOfMonth){
+          if (dayOfMonth != newDayOfMonth) {
             date.setDate(0);
           }
         } else {
           date.setDate(1);
-          date.setMonth(date.getMonth() + value*(3));
+          date.setMonth(date.getMonth() + value * (3));
           date.setMonth(date.getMonth() + 1);
           date.setDate(date.getDate() - 1);
         }
@@ -685,7 +701,21 @@
 
         // this case for years
       case DateLibrary.GranularityType.Years:
-        date.setFullYear(date.getFullYear() + value);
+        var currDate = new Date(date.getTime());
+        currDate.setDate(currDate.getDate() + 1);
+        if (currDate.getDate() !== 1) {
+          var dayOfMonth = date.getDate();
+          date.setMonth(date.getMonth() + value * (12));
+          var newDayOfMonth = date.getDate();
+          if (dayOfMonth != newDayOfMonth) {
+            date.setDate(0);
+          }
+        } else {
+          date.setDate(1);
+          date.setMonth(date.getMonth() + value * (12));
+          date.setMonth(date.getMonth() + 1);
+          date.setDate(date.getDate() - 1);
+        }
         break;
 
       default:
@@ -698,11 +728,19 @@
   function getFirstDay(inputDate, granularityType) {
     var date = new Date(inputDate);
     // call setDateOfTimeAtStart function
-    date = setDateOfTimeAtStart(date);
+    if (granularityType === DateLibrary.GranularityType.Hours) {
+      date = setHourOfTimeAtStart(date);
+    } else {
+      date = setDateOfTimeAtStart(date);
+    }
     //date.setDate(1);
 
     // granularityType switch start
     switch (granularityType) {
+      // this case  for hours
+      case DateLibrary.GranularityType.Hours:
+        // Not Need to Write Any thing
+        break;
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
@@ -753,11 +791,19 @@
       lastDayArray[1] = "29";
     }
 
-    // call setDateOfTimeAtEnd function
-    date = setDateOfTimeAtEnd(date);
+    if (granularityType === DateLibrary.GranularityType.Hours) {
+      date = setHourOfTimeAtEnd(date);
+    } else {
+      // call setDateOfTimeAtEnd function
+      date = setDateOfTimeAtEnd(date);
+    }
 
     // granularityType switch start
     switch (granularityType) {
+      // this case  for hours
+      case DateLibrary.GranularityType.Hours:
+        // Not Need to Write Any thing
+        break;
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
@@ -779,7 +825,7 @@
         // set quarters last month
         date.setDate(1);
         date.setMonth(month);
-        date.setDate(lastDayArray[month]);
+        date.setDate(lastDayArray[month%12]);
         break;
 
         // this case for halfYears
@@ -788,7 +834,7 @@
         var hf = parseInt((date.getMonth() + 1) / 6);
         // set half years last month
         date.setMonth(hf * 6 + 6 - 1);
-        date.setDate(lastDayArray[hf - 1]);
+        date.setDate(lastDayArray[(hf - 1)%12]);
         break;
 
         // this case for years
