@@ -55,6 +55,32 @@
     return -1;
   }; /* getDayOfWeek function end */
 
+  /* getQuarterOfYear function start */
+  DateLibrary.getQuarterOfYear = function(inputDate, input) {
+    // get operationType and convert into lower case
+    var operationType = getOperationTypeValue(input.operationType);
+
+    /* operationType switch start */
+    switch (operationType) {
+      /* Quarter_number_of_year case start */
+      case DateLibrary.OperationType.Quarter_number_of_year:
+        // call getQuarterNumberOfYear function and return value
+        return getQuarterNumberOfYear(inputDate);
+        break;
+        /* Quarter_number_of_year case end */
+
+        /* default case start */
+      default:
+        console.error("operationType not match");
+        break;
+        /* default case end */
+
+    } /* operationType switch end */
+    return -1;
+  }; /* getQuarterOfYear function end */
+
+  
+
   /* getRelativeDate function start */
   DateLibrary.getRelativeDate = function(inputDate, input) {
     // get operationType and convert into lower case
@@ -413,6 +439,7 @@
     Week_of_Year: "week of year",
     Calendar_Week_of_Month: "calendar week of month",
     Week_of_Month_by_Days_Distribution_for_as_Weeks: "week of month by days distribution for as weeks",
+    Quarter_number_of_year: "Quarter number of year"
   };
 
   // DateOfWeek JSON
@@ -1009,6 +1036,13 @@
     var startDayOfWeek = input.startDayOfWeek;
     return getWeekInMonth(inputDate, startDayOfWeek);
   } // getCalendarWeekOfMonth function end
+
+  // getQuarterOfYear function start
+  function getQuarterNumberOfYear(inputDate) {
+      var date = new Date(inputDate);
+      var month = date.getMonth() + 1;
+      return (Math.ceil(month / 3));
+  } // getQuarterOfYear function end
 
   /* Date Function End */
   if (typeof define === "function" && define.amd) this.DateLibrary = DateLibrary, define(DateLibrary);
