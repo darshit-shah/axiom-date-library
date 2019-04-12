@@ -1,6 +1,6 @@
 {
   "name": "axiom-date-library",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "--- #### Author : Axiom ##### Created on : 9th Nov 2015 <!-- ##### Update Date : 10th Nov 2015 --> --- ## constant",
   "main": "dateManagement.js",
   "scripts": {
