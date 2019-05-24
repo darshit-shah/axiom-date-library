@@ -105,7 +105,7 @@
         // check validation of granularityType
         if (validateGranularityType(input.granularityType)) {
           //call getFirstDay function and return value
-          return getFirstDay(inputDate, input.granularityType.toTitleCase());
+          return getFirstDay(inputDate, input);
         }
         break;
         /* First_Date Case end */
@@ -115,7 +115,7 @@
         // check validation of granularityType
         if (validateGranularityType(input.granularityType)) {
           // call getLastDay function and return value
-          return getLastDay(inputDate, input.granularityType.toTitleCase());
+          return getLastDay(inputDate, input);
         }
         break;
         /* Last_Date Case end */
@@ -275,7 +275,7 @@
     if (validateGranularityType(input.granularityType)) {
       var difference = (new Date(toDate)).getTime() - (new Date(fromDate)).getTime();
       var dividedBy = 1;
-      var granularityType = input.granularityType.toTitleCase();
+      var granularityType = input.granularityType.toTitleCase();      
       // granularityType switch start
       switch (granularityType) {
         // this case for seconds
@@ -746,14 +746,15 @@
         break;
 
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // addDateTime function end
 
   // getFirstDay function start
-  function getFirstDay(inputDate, granularityType) {
+  function getFirstDay(inputDate, input) {
     var date = new Date(inputDate);
+    var granularityType = input.granularityType.toTitleCase();
     // call setDateOfTimeAtStart function
     if (granularityType === DateLibrary.GranularityType.Hours) {
       date = setHourOfTimeAtStart(date);
@@ -771,6 +772,33 @@
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
+        break;
+
+      case DateLibrary.GranularityType.Weeks:
+        if(!input.startDayOfWeek || input.startDayOfWeek == DateLibrary.DOW.Sunday){
+          date = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -date.getDay()
+          });
+        } else if(input.startDayOfWeek == DateLibrary.DOW.Monday){
+          var prevDate = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -1
+          });
+          var prevSundayDate = DateLibrary.getRelativeDate(prevDate, {
+              operationType: "First_Date",
+              granularityType: "Weeks",
+              startDayOfWeek: "Sunday"
+          });
+          date = DateLibrary.getRelativeDate(prevSundayDate, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 1
+          });
+        }
+
         break;
         // this case  for months
       case DateLibrary.GranularityType.Months:
@@ -803,15 +831,15 @@
         break;
 
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // getFirstDay function end
 
   // getLastDay function start
-  function getLastDay(inputDate, granularityType) {
+  function getLastDay(inputDate, input) {
     var date = new Date(inputDate);
-
+    var granularityType = input.granularityType.toTitleCase();
     var lastDayArray = ["31", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"];
     var year = date.getFullYear();
     if (year % 4 === 0) {
@@ -834,6 +862,33 @@
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
+        break;
+
+      case DateLibrary.GranularityType.Weeks:
+        if(!input.startDayOfWeek || input.startDayOfWeek == DateLibrary.DOW.Sunday){
+          date = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 6-date.getDay()
+          });
+        } else if(input.startDayOfWeek == DateLibrary.DOW.Monday){
+          var prevDate = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -1
+          });
+          var prevSundayDate = DateLibrary.getRelativeDate(prevDate, {
+              operationType: "Last_Date",
+              granularityType: "Weeks",
+              startDayOfWeek: "Sunday"
+          });
+          date = DateLibrary.getRelativeDate(prevSundayDate, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 1
+          });
+        }
+
         break;
 
         // this case for month
@@ -872,7 +927,7 @@
         break;
 
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // getLastDay function end
@@ -950,7 +1005,7 @@
       date.setDate(1);
       date.setMonth(monthCount);
       monthCount++;
-      date = getLastDay(date, "Months");
+      date = getLastDay(date, {granularityType: "Months"});
       countWeek += getWeekInMonth(date, startDayOfWeek);
       if (monthCount != 1)
         countWeek--;
@@ -1000,7 +1055,7 @@
       date.setDate(1);
       date.setMonth(monthCount);
       monthCount++;
-      date = getLastDay(date, "Months");
+      date = getLastDay(date, {granularityType: "Months"});
       countWeekofPreviousMonth += getWeekInMonth(date, startDayOfWeek);
       if (monthCount != 1)
         countWeekofPreviousMonth--;
@@ -1018,7 +1073,7 @@
     days[2] = input["30days"];
     days[3] = input["31days"];
 
-    var LastDayOfDate = (getLastDay(date, "Months")).getDate();
+    var LastDayOfDate = (getLastDay(date, {granularityType: "Months"})).getDate();
     var inputDateDate = inputDate.getDate();
     var countWeek = 0;
     var sumOfDays = 0;
