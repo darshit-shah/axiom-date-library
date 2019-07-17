@@ -1045,23 +1045,32 @@
 
   // getWeekOfYear function start
   function getWeekOfYear(inputDate, input) {
-    var countWeekofPreviousMonth = 0;
-    var monthCount = 0;
-    var date = new Date(inputDate);
-    var inputDateMonth = date.getMonth();
-    var previousCoundWeek = 0;
-    var startDayOfWeek = input.startDayOfWeek;
+    let countWeekofPreviousMonth = 0;
+    let monthCount = 0;
+    let date = new Date(inputDate);
+    let nextDate = new Date(inputDate);
+    nextDate.setTime(date.getTime());
+    nextDate.setDate(nextDate.getDate()+1);
+    const inputDateMonth = date.getMonth();
+    const previousCoundWeek = 0;
+    const startDayOfWeek = input.startDayOfWeek;
     while (monthCount < inputDateMonth) {
       date.setDate(1);
       date.setMonth(monthCount);
       monthCount++;
       date = getLastDay(date, {granularityType: "Months"});
       countWeekofPreviousMonth += getWeekInMonth(date, startDayOfWeek);
-      if (monthCount != 1)
+      nextDate.setTime(date.getTime());
+      nextDate.setDate(nextDate.getDate()+1);
+      if(getDayOfWeek(nextDate) !== startDayOfWeek){
         countWeekofPreviousMonth--;
+      }
+      // if (monthCount != 1)
+      //   countWeekofPreviousMonth--;
     }
-    var countWeekofMonth = getWeekInMonth(inputDate, startDayOfWeek);
-    return countWeekofPreviousMonth + (countWeekofPreviousMonth === 0 ? countWeekofMonth : countWeekofMonth - 1);
+    const countWeekofMonth = getWeekInMonth(inputDate, startDayOfWeek);
+    return countWeekofPreviousMonth + countWeekofMonth;
+    // return countWeekofPreviousMonth + (countWeekofPreviousMonth === 0 ? countWeekofMonth : countWeekofMonth - 1);
   } // getWeekOfYear function end
 
   // getWeekOfMonthByDaysDistributionForAsWeeks function start
