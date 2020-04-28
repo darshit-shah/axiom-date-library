@@ -46,6 +46,7 @@
 	* Quarters
 	* HalfYears
 	* Years
+	* FinancialYears
 
 
 ## functions
