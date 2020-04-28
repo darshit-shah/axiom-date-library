@@ -834,8 +834,9 @@
         // this case for financial year april
       case DateLibrary.GranularityType.Financialyears:
         const tempDate = new Date(date);
-        date.setDate(1);
+        tempDate.setDate(1);
         tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setDate(1);
         date.setMonth(3);
         date.setFullYear(tempDate.getFullYear());
         break;
@@ -939,8 +940,9 @@
         // this case for financial year april
       case DateLibrary.GranularityType.Financialyears:
         const tempDate = new Date(date);
-        date.setDate(1);
+        tempDate.setDate(1);
         tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setDate(1);
         date.setMonth(2);
         date.setFullYear(tempDate.getFullYear() + 1);
         date.setDate(31);
