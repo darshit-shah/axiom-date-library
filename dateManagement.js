@@ -463,7 +463,8 @@
     Months: 'Months',
     Quarters: 'Quarters',
     HalfYears: 'Halfyear',
-    Years: 'Years'
+    Years: 'Years',
+    Financialyears: 'Financialyears'
   }
 
   // WEEK_DAY_NAME Array
@@ -830,6 +831,15 @@
         date.setMonth(0);
         break;
 
+        // this case for financial year april
+      case DateLibrary.GranularityType.Financialyears:
+        date.setDate(1);
+        const tempDate = new Date(date);
+        tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setMonth(3);
+        date.setFullYear(tempDate.getFullYear());
+        break;
+
       default:
         console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
@@ -923,6 +933,16 @@
       case DateLibrary.GranularityType.Years:
         date.setDate(1);
         date.setMonth(11);
+        date.setDate(31);
+        break;
+
+        // this case for financial year april
+      case DateLibrary.GranularityType.Financialyears:
+        date.setDate(1);
+        const tempDate = new Date(date);
+        tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setMonth(2);
+        date.setFullYear(tempDate.getFullYear() + 1);
         date.setDate(31);
         break;
 
