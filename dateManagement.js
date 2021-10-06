@@ -55,6 +55,32 @@
     return -1;
   }; /* getDayOfWeek function end */
 
+  /* getQuarterOfYear function start */
+  DateLibrary.getQuarterOfYear = function(inputDate, input) {
+    // get operationType and convert into lower case
+    var operationType = getOperationTypeValue(input.operationType);
+
+    /* operationType switch start */
+    switch (operationType) {
+      /* Quarter_number_of_year case start */
+      case DateLibrary.OperationType.Quarter_number_of_year:
+        // call getQuarterNumberOfYear function and return value
+        return getQuarterNumberOfYear(inputDate);
+        break;
+        /* Quarter_number_of_year case end */
+
+        /* default case start */
+      default:
+        console.error("operationType not match");
+        break;
+        /* default case end */
+
+    } /* operationType switch end */
+    return -1;
+  }; /* getQuarterOfYear function end */
+
+  
+
   /* getRelativeDate function start */
   DateLibrary.getRelativeDate = function(inputDate, input) {
     // get operationType and convert into lower case
@@ -79,7 +105,7 @@
         // check validation of granularityType
         if (validateGranularityType(input.granularityType)) {
           //call getFirstDay function and return value
-          return getFirstDay(inputDate, input.granularityType.toTitleCase());
+          return getFirstDay(inputDate, input);
         }
         break;
         /* First_Date Case end */
@@ -89,7 +115,7 @@
         // check validation of granularityType
         if (validateGranularityType(input.granularityType)) {
           // call getLastDay function and return value
-          return getLastDay(inputDate, input.granularityType.toTitleCase());
+          return getLastDay(inputDate, input);
         }
         break;
         /* Last_Date Case end */
@@ -250,7 +276,7 @@
     if (validateGranularityType(input.granularityType)) {
       var difference = (new Date(toDate)).getTime() - (new Date(fromDate)).getTime();
       var dividedBy = 1;
-      var granularityType = input.granularityType.toTitleCase();
+      var granularityType = input.granularityType.toTitleCase();      
       // granularityType switch start
       switch (granularityType) {
         // this case for seconds
@@ -414,6 +440,7 @@
     Week_of_Year: "week of year",
     Calendar_Week_of_Month: "calendar week of month",
     Week_of_Month_by_Days_Distribution_for_as_Weeks: "week of month by days distribution for as weeks",
+    Quarter_number_of_year: "Quarter number of year"
   };
 
   // DateOfWeek JSON
@@ -437,7 +464,8 @@
     Months: 'Months',
     Quarters: 'Quarters',
     HalfYears: 'Halfyear',
-    Years: 'Years'
+    Years: 'Years',
+    Financialyears: 'Financialyears'
   }
 
   // WEEK_DAY_NAME Array
@@ -506,6 +534,22 @@
       weekNumber++;
     }
     return weekNumber;
+  }
+
+  // set Time to at Start into given hour and return Date
+  function setHourOfTimeAtStart(date) {
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+  }
+
+  // set Time to at End into given hour and return Date
+  function setHourOfTimeAtEnd(date) {
+    date.setMinutes(59);
+    date.setSeconds(59);
+    date.setMilliseconds(999);
+    return date;
   }
 
   // set Time to at Start into given Date and return Date
@@ -664,9 +708,14 @@
         // this case for months
       case DateLibrary.GranularityType.Months:
         var currDate = new Date(date.getTime());
-        currDate.setDate(currDate.getDate()+1);
+        currDate.setDate(currDate.getDate() + 1);
         if (currDate.getDate() !== 1) {
+          var dayOfMonth = date.getDate();
           date.setMonth(date.getMonth() + value);
+          var newDayOfMonth = date.getDate();
+          if (dayOfMonth != newDayOfMonth) {
+            date.setDate(0);
+          }
         } else {
           date.setDate(1);
           date.setMonth(date.getMonth() + value);
@@ -677,12 +726,17 @@
 
       case DateLibrary.GranularityType.Quarters:
         var currDate = new Date(date.getTime());
-        currDate.setDate(currDate.getDate()+1);
+        currDate.setDate(currDate.getDate() + 1);
         if (currDate.getDate() !== 1) {
-          date.setMonth(date.getMonth() + value*(3));
+          var dayOfMonth = date.getDate();
+          date.setMonth(date.getMonth() + value * (3));
+          var newDayOfMonth = date.getDate();
+          if (dayOfMonth != newDayOfMonth) {
+            date.setDate(0);
+          }
         } else {
           date.setDate(1);
-          date.setMonth(date.getMonth() + value*(3));
+          date.setMonth(date.getMonth() + value * (3));
           date.setMonth(date.getMonth() + 1);
           date.setDate(date.getDate() - 1);
         }
@@ -690,27 +744,77 @@
 
         // this case for years
       case DateLibrary.GranularityType.Years:
-        date.setFullYear(date.getFullYear() + value);
+        var currDate = new Date(date.getTime());
+        currDate.setDate(currDate.getDate() + 1);
+        if (currDate.getDate() !== 1) {
+          var dayOfMonth = date.getDate();
+          date.setMonth(date.getMonth() + value * (12));
+          var newDayOfMonth = date.getDate();
+          if (dayOfMonth != newDayOfMonth) {
+            date.setDate(0);
+          }
+        } else {
+          date.setDate(1);
+          date.setMonth(date.getMonth() + value * (12));
+          date.setMonth(date.getMonth() + 1);
+          date.setDate(date.getDate() - 1);
+        }
         break;
 
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // addDateTime function end
 
   // getFirstDay function start
-  function getFirstDay(inputDate, granularityType) {
+  function getFirstDay(inputDate, input) {
     var date = new Date(inputDate);
+    var granularityType = input.granularityType.toTitleCase();
     // call setDateOfTimeAtStart function
-    date = setDateOfTimeAtStart(date);
+    if (granularityType === DateLibrary.GranularityType.Hours) {
+      date = setHourOfTimeAtStart(date);
+    } else {
+      date = setDateOfTimeAtStart(date);
+    }
     //date.setDate(1);
 
     // granularityType switch start
     switch (granularityType) {
+      // this case  for hours
+      case DateLibrary.GranularityType.Hours:
+        // Not Need to Write Any thing
+        break;
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
+        break;
+
+      case DateLibrary.GranularityType.Weeks:
+        if(!input.startDayOfWeek || input.startDayOfWeek == DateLibrary.DOW.Sunday){
+          date = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -date.getDay()
+          });
+        } else if(input.startDayOfWeek == DateLibrary.DOW.Monday){
+          var prevDate = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -1
+          });
+          var prevSundayDate = DateLibrary.getRelativeDate(prevDate, {
+              operationType: "First_Date",
+              granularityType: "Weeks",
+              startDayOfWeek: "Sunday"
+          });
+          date = DateLibrary.getRelativeDate(prevSundayDate, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 1
+          });
+        }
+
         break;
         // this case  for months
       case DateLibrary.GranularityType.Months:
@@ -742,30 +846,74 @@
         date.setMonth(0);
         break;
 
+        // this case for financial year april
+      case DateLibrary.GranularityType.Financialyears:
+        date.setDate(1);
+        const tempDate = new Date(date);
+        tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setMonth(3);
+        date.setFullYear(tempDate.getFullYear());
+        break;
+
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // getFirstDay function end
 
   // getLastDay function start
-  function getLastDay(inputDate, granularityType) {
+  function getLastDay(inputDate, input) {
     var date = new Date(inputDate);
-
+    var granularityType = input.granularityType.toTitleCase();
     var lastDayArray = ["31", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"];
     var year = date.getFullYear();
     if (year % 4 === 0) {
       lastDayArray[1] = "29";
     }
 
-    // call setDateOfTimeAtEnd function
-    date = setDateOfTimeAtEnd(date);
+    if (granularityType === DateLibrary.GranularityType.Hours) {
+      date = setHourOfTimeAtEnd(date);
+    } else {
+      // call setDateOfTimeAtEnd function
+      date = setDateOfTimeAtEnd(date);
+    }
 
     // granularityType switch start
     switch (granularityType) {
+      // this case  for hours
+      case DateLibrary.GranularityType.Hours:
+        // Not Need to Write Any thing
+        break;
       // this case  for days
       case DateLibrary.GranularityType.Days:
         // Not Need to Write Any thing
+        break;
+
+      case DateLibrary.GranularityType.Weeks:
+        if(!input.startDayOfWeek || input.startDayOfWeek == DateLibrary.DOW.Sunday){
+          date = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 6-date.getDay()
+          });
+        } else if(input.startDayOfWeek == DateLibrary.DOW.Monday){
+          var prevDate = DateLibrary.getRelativeDate(date, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: -1
+          });
+          var prevSundayDate = DateLibrary.getRelativeDate(prevDate, {
+              operationType: "Last_Date",
+              granularityType: "Weeks",
+              startDayOfWeek: "Sunday"
+          });
+          date = DateLibrary.getRelativeDate(prevSundayDate, {
+              operationType: "Absolute_DateTime",
+              granularityType: "Days",
+              value: 1
+          });
+        }
+
         break;
 
         // this case for month
@@ -784,7 +932,7 @@
         // set quarters last month
         date.setDate(1);
         date.setMonth(month);
-        date.setDate(lastDayArray[month]);
+        date.setDate(lastDayArray[month%12]);
         break;
 
         // this case for halfYears
@@ -793,7 +941,7 @@
         var hf = parseInt((date.getMonth() + 1) / 6);
         // set half years last month
         date.setMonth(hf * 6 + 6 - 1);
-        date.setDate(lastDayArray[hf - 1]);
+        date.setDate(lastDayArray[(hf - 1)%12]);
         break;
 
         // this case for years
@@ -803,8 +951,18 @@
         date.setDate(31);
         break;
 
+        // this case for financial year april
+      case DateLibrary.GranularityType.Financialyears:
+        date.setDate(1);
+        const tempDate = new Date(date);
+        tempDate.setMonth(tempDate.getMonth() - 3);
+        date.setMonth(2);
+        date.setFullYear(tempDate.getFullYear() + 1);
+        date.setDate(31);
+        break;
+
       default:
-        console.error("Invalid granularityType");
+        console.error("Invalid granularityType : " + granularityType);
     } // granularityType switch end
     return date;
   } // getLastDay function end
@@ -882,7 +1040,7 @@
       date.setDate(1);
       date.setMonth(monthCount);
       monthCount++;
-      date = getLastDay(date, "Months");
+      date = getLastDay(date, {granularityType: "Months"});
       countWeek += getWeekInMonth(date, startDayOfWeek);
       if (monthCount != 1)
         countWeek--;
@@ -922,23 +1080,32 @@
 
   // getWeekOfYear function start
   function getWeekOfYear(inputDate, input) {
-    var countWeekofPreviousMonth = 0;
-    var monthCount = input.startMonth || 0;
-    var date = new Date(inputDate);
-    var inputDateMonth = date.getMonth();
-    var previousCoundWeek = 0;
-    var startDayOfWeek = input.startDayOfWeek;
+    let countWeekofPreviousMonth = 0;
+    let monthCount = input.startMonth || 0;;
+    let date = new Date(inputDate);
+    let nextDate = new Date(inputDate);
+    nextDate.setTime(date.getTime());
+    nextDate.setDate(nextDate.getDate()+1);
+    const inputDateMonth = date.getMonth();
+    const previousCoundWeek = 0;
+    const startDayOfWeek = input.startDayOfWeek;
     while (monthCount < inputDateMonth) {
       date.setDate(1);
       date.setMonth(monthCount);
       monthCount++;
-      date = getLastDay(date, "Months");
+      date = getLastDay(date, {granularityType: "Months"});
       countWeekofPreviousMonth += getWeekInMonth(date, startDayOfWeek);
-      if (monthCount != 1)
+      nextDate.setTime(date.getTime());
+      nextDate.setDate(nextDate.getDate()+1);
+      if(getDayOfWeek(nextDate) !== startDayOfWeek){
         countWeekofPreviousMonth--;
+      }
+      // if (monthCount != 1)
+      //   countWeekofPreviousMonth--;
     }
-    var countWeekofMonth = getWeekInMonth(inputDate, startDayOfWeek);
-    return countWeekofPreviousMonth + (countWeekofPreviousMonth === 0 ? countWeekofMonth : countWeekofMonth - 1);
+    const countWeekofMonth = getWeekInMonth(inputDate, startDayOfWeek);
+    return countWeekofPreviousMonth + countWeekofMonth;
+    // return countWeekofPreviousMonth + (countWeekofPreviousMonth === 0 ? countWeekofMonth : countWeekofMonth - 1);
   } // getWeekOfYear function end
 
   // getWeekOfMonthByDaysDistributionForAsWeeks function start
@@ -950,7 +1117,7 @@
     days[2] = input["30days"];
     days[3] = input["31days"];
 
-    var LastDayOfDate = (getLastDay(date, "Months")).getDate();
+    var LastDayOfDate = (getLastDay(date, {granularityType: "Months"})).getDate();
     var inputDateDate = inputDate.getDate();
     var countWeek = 0;
     var sumOfDays = 0;
@@ -968,6 +1135,13 @@
     var startDayOfWeek = input.startDayOfWeek;
     return getWeekInMonth(inputDate, startDayOfWeek);
   } // getCalendarWeekOfMonth function end
+
+  // getQuarterOfYear function start
+  function getQuarterNumberOfYear(inputDate) {
+      var date = new Date(inputDate);
+      var month = date.getMonth() + 1;
+      return (Math.ceil(month / 3));
+  } // getQuarterOfYear function end
 
   /* Date Function End */
   if (typeof define === "function" && define.amd) this.DateLibrary = DateLibrary, define(DateLibrary);

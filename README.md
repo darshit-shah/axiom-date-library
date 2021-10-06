@@ -46,6 +46,7 @@
 	* Quarters
 	* HalfYears
 	* Years
+	* FinancialYears
 
 
 ## functions
@@ -249,6 +250,19 @@
 			- find total days in month [`30`]
 			- find week count given date follow in which week [`6+6+6`=`18`]
 			- total week count is [`3`]
+
+	* _example4_
+		- _Description_ :  what is the  week number in year where the week starts from Monday and month calculation starts from April.
+		```javascript
+			DateLibrary.getWeekNumber(new Date("2021-05-05"),
+				{operationType:"Week_of_Year",
+					startDayOfWeek:"Monday",
+						startMonth:3}) // Output : 5
+		```
+		- _Steps_			
+			- find Previous month(s) week count (Monday as Start day of week)(`Apr`) [`4`] starting the startMonth i.e April here
+			- find week count of given date month(`May`) [`1`]
+			- total week count is [`4+1` = `5`]
 
 
 - DateLibrary.getDateDifference(fromDate,toDate,{JSON Object})
