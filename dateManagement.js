@@ -243,6 +243,7 @@
     return -1;
   }; /* getWeekNumber function end*/
 
+
   //CBT: This funtion is used to get difference between two Dates in seconds,minutes,hours,days,weeks
   DateLibrary.getDateDifference = function(fromDate, toDate, input) {
     var daysDiff = 0;
@@ -441,7 +442,21 @@
 
   // WEEK_DAY_NAME Array
   DateLibrary.WEEK_DAY_NAME = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  DateLibrary.MONTH_OF_YEAR = {
+    January : 0,
+    February :1,
+    March :2,
+    April : 3,
+    May:4,
+    June :5,
+    July :6,
+    August :7,
+    September :8,
+    October :9,
+    November :10,
+    December:11
 
+  }
   /* Common Function Start */
 
   // convert String into TitleCase
@@ -908,7 +923,7 @@
   // getWeekOfYear function start
   function getWeekOfYear(inputDate, input) {
     var countWeekofPreviousMonth = 0;
-    var monthCount = 0;
+    var monthCount = input.startMonth || 0;
     var date = new Date(inputDate);
     var inputDateMonth = date.getMonth();
     var previousCoundWeek = 0;
