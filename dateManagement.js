@@ -10,6 +10,8 @@
 // Month of Year [1-12]
 // Quarter of Year [1-4]
 
+let assertHelper;
+
 ! function() {
   if (typeof require === "function") {
     assertHelper = require("axiom-assert-helper");
